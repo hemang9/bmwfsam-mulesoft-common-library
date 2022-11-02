@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<error-handler name="globalErrorHandler" doc:id="ea068a54-65e3-4d02-9fbb-7d500bfc2f84">
+	
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7f2039bd-dbac-4fa2-beed-95295631e64b" type="VALIDATION:VALIDATION">
+			<logger level="ERROR" doc:name="OnErrorContinue" doc:id="3b49b6ad-79af-4bf2-9578-53305e135080" message='#[%dw 2.0
+output application/json
+---
+{ 
+	"traceId": vars.traceId,
+	"errorType": "404:VALIDATION:VALIDATION", 
+	"errorMessage": "DetailedErrorDescription: "  ++ (error.detailedDescription default "")
+}]' />
+			<ee:transform doc:name="ValidationFailure" doc:id="aa0feb07-f604-44d1-b71a-b208e925715d" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+
+if ( (error.detailedDescription contains "InvalidParameters"))
+	400
+else
+	404]]></ee:set-variable>
+					<ee:set-variable variableName="errorType" ><![CDATA[%dw 2.0
+output application/java
+---
+"ValidationFailure"]]></ee:set-variable>
+					<ee:set-variable variableName="errorDescr" ><![CDATA[%dw 2.0
+output application/java
+---
+
+error.detailedDescription default ""]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<parse-template doc:name="Parse Template" doc:id="941159b9-75aa-4798-9f0d-a4fdcb9f5ee2" location="errorValidation.template" outputMimeType="application/json"/>
+				
+				</on-error-continue>
+				
+				
+	<on-error-propagate type="APIKIT:BAD_REQUEST">
+	
+	<logger level="ERROR" doc:name="OnErrorPropagate" doc:id="0af8c5f6-080e-42e3-8b78-fe821dcec7ca" message='#[%dw 2.0
+output application/json
+---
+{ 
+	"traceId": vars.traceId,
+	"errorType": "400:APIKIT:BAD_REQUEST", 
+	"errorMessage": "DetailedErrorDescription: "  ++ (error.detailedDescription default "")
+}]' />
+	
+			<ee:transform doc:name="Transform Message" doc:id="30fc83ee-9740-4c40-bad2-47e60600b248">
+				<ee:message />
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+					<ee:set-variable variableName="errorType"><![CDATA[%dw 2.0
+output application/java
+---
+"InvalidParameters"]]></ee:set-variable>
+					<ee:set-variable variableName="errorDescr"><![CDATA[%dw 2.0
+output application/java
+---
+"Invalid Parameters provided" ++ (error.detailedDescription default "")]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			 <parse-template doc:name="Parse Template" doc:id="a1dd9271-a287-44b8-9fe8-c7e4c9b0cd3e" location="errorValidation.template" outputMimeType="application/json"/>
+			 </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+            
+            <logger level="ERROR" doc:name="OnErrorPropagate" doc:id="6c56aded-3f76-4ddb-a8d0-9f8c2b348129" message='#[%dw 2.0
+output application/json
+---
+{ 
+	"traceId": vars.traceId,
+	"errorType": "404:APIKIT:NOT_FOUND", 
+	"errorMessage": "DetailedErrorDescription: "  ++ (error.detailedDescription default "")
+}]' />
+            
+            <ee:transform doc:name="Transform Message" doc:id="04464395-04db-4edb-96a1-65299f00ba48">
+				<ee:message />
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+					<ee:set-variable variableName="errorType"><![CDATA[%dw 2.0
+output application/java
+---
+"ResourceNotFound"]]></ee:set-variable>
+					<ee:set-variable variableName="errorDescr"><![CDATA[%dw 2.0
+output application/java
+---
+"Resource not found" ++ (error.detailedDescription default "")]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			 <parse-template doc:name="Parse Template" doc:id="d53e48ae-9a64-4475-9fa4-43f0447355de" location="error.template" outputMimeType="application/json"/>
+			 
+                 
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+            
+            <logger level="ERROR" doc:name="OnErrorPropagate" doc:id="74d2b198-a4f9-4842-8467-2c7a67d6d9cd" message='#[%dw 2.0
+output application/json
+---
+{ 
+	"traceId": vars.traceId,
+	"errorType": "405:APIKIT:METHOD_NOT_ALLOWED", 
+	"errorMessage": "DetailedErrorDescription: "  ++ (error.detailedDescription default "")
+}]' />
+            
+             <ee:transform doc:name="Transform Message" doc:id="c78810cb-4216-4e62-a4f3-e9caa4040d68">
+				<ee:message />
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
+					<ee:set-variable variableName="errorType"><![CDATA[%dw 2.0
+output application/java
+---
+"MethodNotAllowed"]]></ee:set-variable>
+					<ee:set-variable variableName="errorDescr"><![CDATA[%dw 2.0
+output application/java
+---
+"Method not allowed" ++ (error.detailedDescription default "")]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			 <parse-template doc:name="Parse Template" doc:id="cf43bdc6-bd1b-48c4-9303-be335a8f5263" location="error.template" outputMimeType="application/json"/>
+            
+            
+                 
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+            
+            <logger level="ERROR" doc:name="OnErrorPropagate" doc:id="de7b081d-4d6f-49c1-af67-95ded6a545e4" message='#[%dw 2.0
+output application/json
+---
+{ 
+	"traceId": vars.traceId,
+	"errorType": "406:APIKIT:NOT_ACCEPTABLE", 
+	"errorMessage": "DetailedErrorDescription: "  ++ (error.detailedDescription default "")
+}]' />
+            
+              <ee:transform doc:name="Transform Message" doc:id="0ba7e39c-dd9c-4b93-ad9c-1f7ce5bbc2d3">
+				<ee:message />
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[406]]></ee:set-variable>
+					<ee:set-variable variableName="errorType"><![CDATA[%dw 2.0
+output application/java
+---
+"NotAcceptable"]]></ee:set-variable>
+					<ee:set-variable variableName="errorDescr"><![CDATA[%dw 2.0
+output application/java
+---
+"Not Acceptable" ++ (error.detailedDescription default "")]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			 <parse-template doc:name="Parse Template" doc:id="eb5ddcbd-2ca3-41b4-998c-f90156b7703f" location="error.template" outputMimeType="application/json"/>
+			 
+            
+                
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+            
+             <logger level="ERROR" doc:name="OnErrorPropagate" doc:id="20822321-ef5c-4087-9fa3-a70e8cb69c37" message='#[%dw 2.0
+output application/json
+---
+{ 
+	"traceId": vars.traceId,
+	"errorType": "415:APIKIT:UNSUPPORTED_MEDIA_TYPE", 
+	"errorMessage": "DetailedErrorDescription: "  ++ (error.detailedDescription default "")
+}]' />
+            
+            <ee:transform doc:name="Transform Message" doc:id="0b1b54dc-89b4-4d8a-ae42-a2588dc737c4">
+				<ee:message />
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
+					<ee:set-variable variableName="errorType"><![CDATA[%dw 2.0
+output application/java
+---
+"UnsupportedMediaType"]]></ee:set-variable>
+					<ee:set-variable variableName="errorDescr"><![CDATA[%dw 2.0
+output application/java
+---
+"Unsupported media Type" ++ (error.detailedDescription default "")]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			 <parse-template doc:name="Parse Template" doc:id="79c61841-c672-4e64-8f33-7bfa4857a5cd" location="error.template" outputMimeType="application/json"/>
+			 
+			 
+ 
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+            
+            <logger level="ERROR" doc:name="OnErrorPropagate" doc:id="3ff06055-8e43-4bba-be47-2610094b873c" message='#[%dw 2.0
+output application/json
+---
+{ 
+	"traceId": vars.traceId,
+	"errorType": "501:APIKIT:NOT_IMPLEMENTED", 
+	"errorMessage": "DetailedErrorDescription: "  ++ (error.detailedDescription default "")
+}]' />
+            
+            <ee:transform doc:name="Transform Message" doc:id="d55e8ad7-02bc-4479-bfbe-3ff913cd0f8c">
+				<ee:message />
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+					<ee:set-variable variableName="errorType"><![CDATA[%dw 2.0
+output application/java
+---
+"NotImplemented"]]></ee:set-variable>
+					<ee:set-variable variableName="errorDescr"><![CDATA[%dw 2.0
+output application/java
+---
+"NotImplemented " ++ (error.detailedDescription default "")]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			 <parse-template doc:name="Parse Template" doc:id="53e7ab7c-8c88-4499-9199-6e98fe889abb" location="error.template" outputMimeType="application/json"/>
+			 
+			 
+               
+            </on-error-propagate>
+            
+
+		
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8883dadd-da8e-407d-b980-1eec0fc123bb" type="ANY">
+						<logger level="ERROR" doc:name="OnErrorContinueErrorAny" doc:id="0a12fe74-3f3a-48ad-98b8-ca63ce4ff7b0" message='#[%dw 2.0
+output application/json
+---
+{ 
+	"traceId": vars.traceId,
+	"errorType": "500:SERVER:ERROR:GeneralizedErrorHandler", 
+	"errorMessage": "DetailedErrorDescription: "  ++ (error.detailedDescription default "")
+}]' />
+			
+			  <ee:transform doc:name="Transform Message" doc:id="eace75c9-b117-4a65-8867-d9276ca0db55">
+				<ee:message />
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+					<ee:set-variable variableName="errorType"><![CDATA[%dw 2.0
+output application/java
+---
+"SERVER:ERROR:GeneralizedErrorHandler"]]></ee:set-variable>
+					<ee:set-variable variableName="errorDescr"><![CDATA[%dw 2.0
+output application/java
+---
+"ServerError " ++ (error.detailedDescription default "")]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			 <parse-template doc:name="Parse Template" doc:id="dac1d108-3d52-4891-b8b6-137d59e1e643" location="error.template" outputMimeType="application/json"/>	
+					
+		</on-error-continue>
+		
+
+</error-handler>
+	
+	</mule>

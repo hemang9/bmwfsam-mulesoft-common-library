@@ -1,0 +1,17 @@
+tlsconfig:
+  truststore.path: "truststore"
+  truststore.type: "jks"
+  
+inboundtls:
+  keystore-path: "tls/nonprodfsmulecloudhub.bmwfs.com.jks"
+  keystore-type: "jks"
+
+https:
+  host: "0.0.0.0"
+  private.port: "8092"
+  
+http:
+  proxyHost: "proxyamericas.bmwgroup.net"
+  proxyPort: "8080"
+  proxyUsername: ""
+  proxyPassword: ""

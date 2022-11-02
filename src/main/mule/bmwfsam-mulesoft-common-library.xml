@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	
+	<global-property doc:name="Global Property" doc:id="22ab0f54-e054-4b10-869d-f1ccdd057a93" name="MULE_RUNTIME_ENVIRONMENT" value="local" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="7383f0eb-0b49-436b-9bb1-6f1f071ecc4c" file="common.secure.config.${MULE_RUNTIME_ENVIRONMENT}.yaml" key="${common.library-encryption.key}" />
+	<configuration-properties doc:name="Configuration properties" doc:id="938db14f-f361-4e46-b379-c4a6d256b333" file="common.config.${MULE_RUNTIME_ENVIRONMENT}.yaml" />
+	<http:listener-config name="BMW_HTTP_Listener_Config_8092" doc:name="HTTP_Listener_config_8092" doc:id="bcfa2c6a-5835-4188-8540-e348026718ef" >
+		<http:listener-connection protocol="HTTPS" host="${https.host}" port="${https.private.port}" >
+			<tls:context >
+				<tls:key-store type="${inboundtls.keystore-type}" path="${inboundtls.keystore-path}" keyPassword="${secure::inboundtls.key-password}" password="${secure::inboundtls.password}" />
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+	
+	<tls:context name="TLS_Context" doc:name="TLS Context" doc:id="7505450e-9459-4e7a-8fbd-613b34ed867e" >
+		<tls:trust-store path="${inboundtls.keystore-path}" password="${secure::tlsconfig.truststore.pwd}" type="${tlsconfig.truststore.type}" />
+	</tls:context>
+	
+</mule>

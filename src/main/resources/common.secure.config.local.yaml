@@ -1,0 +1,6 @@
+tlsconfig:
+  truststore.pwd: "![6EAeHkYQDW0AYpKCT+Zp3A==]"
+  
+inboundtls:
+  key-password: "![6EAeHkYQDW0AYpKCT+Zp3A==]"
+  password: "![6EAeHkYQDW0AYpKCT+Zp3A==]"
