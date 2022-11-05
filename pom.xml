@@ -4,9 +4,9 @@
 
 	<groupId>com.bmwfsam.mule.common</groupId>
 	<artifactId>bmwfsam-mulesoft-common-library</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 	<packaging>mule-application</packaging>
-
+    
 	<name>bmwfsam-mulesoft-common-library</name>
 
 	<properties>
@@ -30,7 +30,7 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<classfier>mule-plugin</classfier>
+					<classifier>mule-plugin</classifier>
 				</configuration>
 			</plugin>
 		</plugins>
