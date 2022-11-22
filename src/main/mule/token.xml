@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ 
+
+<mule
+
+       xmlns:os="http://www.mulesoft.org/schema/mule/os"
+
+       xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+
+       xmlns:http="http://www.mulesoft.org/schema/mule/http"
+
+       xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+
+
+<http:request-config name="HTTP_Request_configuration_Token" doc:name="HTTP Request configuration" doc:id="cdeda24a-0a3a-4a7a-941f-f5e1cb8ee071" >
+		<http:request-connection protocol="HTTPS" host="${mtatoken.host}" connectionIdleTimeout="30000000" tlsContext="TLS_Context">
+			<http:authentication >
+				<http:ntlm-authentication username="${secure::ntlmauthentication.username}" password="${secure::ntlmauthentication.password}"/>
+			</http:authentication>
+		</http:request-connection>
+	</http:request-config>
+	
+	<flow name="tokenFlow" doc:id="5d2eac43-30aa-434b-b516-b1885b0ece2b" >
+
+             <!-- <os:contains doc:name="Contains" doc:id="21ff0b4c-9219-4030-a7be-78577b8eb30b" objectStore="TokenValueObjectStore" key="TokenValue" target="token"/> -->
+
+             <!-- <http:request method="GET" doc:name="Request" doc:id="2ecf7fce-d0e3-45e4-97ae-8c48df689d64" config-ref="HTTP_Request_configuration_Token" path="/CamberSecurity/api/MTA/WindowsAuthorizationToken" /> -->
+
+             <!-- <os:retrieve doc:name="Retrieve" doc:id="78478d50-b3e7-4d3a-aa61-a9b210372aa4" key="tokenValue" objectStore="TokenValueObjectstore" target="TokenValue"/> -->
+
+              <logger level="INFO" doc:name="Flow Start" doc:id="667ce65a-eb0e-4775-8382-9cfa89e6e3da" message='#[%dw 2.0 output application/json  &#10;---  {    &#10;	   "transaction_Id": vars.traceId,&#10;       "category": "INFO",&#10;       "application": "sys-customer-findaccounts-api", &#10;       "message": "start of token flow"  &#10;       }]' />
+		<os:contains doc:name="Contains" doc:id="cb87db7d-20a5-466c-933b-399a07254507" key="TokenValue" objectStore="TokenValueObjectstore"/>
+		<choice doc:name="Choice" doc:id="c1c64b3f-9d95-47f6-b8f2-19a7d2fc68a1" >
+
+                    <when expression="#[payload == true]">
+
+                    <os:retrieve doc:name="Retrieve" doc:id="1a3ce2f9-9b05-4b01-adb6-deea13d885ca" key="TokenValue" target="TokenValue" targetValue="#[payload.token]" objectStore="TokenValueObjectstore"/>
+					<logger level="INFO" doc:name="Logger" doc:id="8795beb3-a70c-4f6c-92c5-218bcdabbc38" message='#[%dw 2.0 output application/json  &#10;--- &#10;{    &#10;	"transaction_Id": vars.traceId,&#10; 	"category": "INFO",&#10; 	"application": "sys-customer-findaccounts-api", 	 	&#10; 	"message": "retreive token from object store"&#10;}]'/>
+                         
+
+</when>
+
+                    <otherwise >
+
+                   
+
+                     <http:request method="GET" doc:name="Request To MTA Token" doc:id="338a400e-64fa-4e09-a834-1b3fbf02a547" path="${mtatoken.path}" config-ref="HTTP_Request_configuration_Token"/>
+
+                          <os:store doc:name="Store" doc:id="0b69bfc9-5f69-4e0a-8457-660ea1098342" key="TokenValue" objectStore="TokenValueObjectstore"/>
+
+                          <set-variable value="#[payload.token]" doc:name="Set Variable" doc:id="016b6db9-983c-4c2b-870d-d8028721d876" variableName="TokenValue" />
+
+                          <!-- <set-variable value="#[payload.token]" doc:name="Set Variable" doc:id="012c9d46-5459-4cf9-a811-a86671546e30" variableName="TokenValue" />  -->
+
+                         
+
+                    
+
+</otherwise>
+
+             </choice>
+
+              <set-payload value="#[vars.TokenValue]" doc:name="Set Payload" doc:id="cc680d58-4737-4eac-b442-7517f9ce656f" />
+		<logger level="INFO" doc:name="Flow End" doc:id="bbee3df0-b564-470a-ad88-fce7c6d35910" message='#[%dw 2.0 output application/json  &#10;---  {    &#10;	   "transaction_Id": vars.traceId,&#10;       "category": "INFO",&#10;       "application": "sys-customer-findaccounts-api", &#10;       "message": "end of token flow"  &#10;       }]' />
+		<error-handler ref="globalErrorHandler" />
+
+      
+
+
+</flow>
+
+      
+
+      
+
+      
+
+</mule>

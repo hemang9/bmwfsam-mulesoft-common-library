@@ -4,7 +4,7 @@
 
 	<groupId>com.bmwfsam.mule.common</groupId>
 	<artifactId>bmwfsam-mulesoft-common-library</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 	<packaging>mule-application</packaging>
     
 	<name>bmwfsam-mulesoft-common-library</name>

@@ -15,3 +15,13 @@ http:
   proxyPort: "8080"
   proxyUsername: ""
   proxyPassword: ""
+
+
+mtatoken:
+  host: "vsfdcrmwus.bmwgroup.net"
+  path: "/CamberSecurity/api/MTA/WindowsAuthorizationToken"
+
+ntlmauthentication:
+  username: ""
+  password: ""
+    
