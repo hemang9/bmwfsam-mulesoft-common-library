@@ -17,4 +17,11 @@ http:
 mtatoken:
   host: "vsfdcrmwus.bmwgroup.net"
   path: "/CamberSecurity/api/MTA/WindowsAuthorizationToken"
+
   
+objectstore:
+  expiryinterval: "20"
+  expiryinterval.unit: "MINUTES"
+  entryttl: "15"
+  entryttl.unit: "MINUTES"
+  persistent: "false"

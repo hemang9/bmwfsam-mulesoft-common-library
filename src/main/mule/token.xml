@@ -27,6 +27,7 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 		</http:request-connection>
 	</http:request-config>
 	
+	<os:object-store name="TokenValueObjectstore" doc:name="Object store" doc:id="5e441683-23e4-4792-a244-e820c916c95c" entryTtl="${objectstore.entryttl}" entryTtlUnit="MINUTES" expirationInterval="${objectstore.expiryinterval}" />
 	<flow name="tokenFlow" doc:id="5d2eac43-30aa-434b-b516-b1885b0ece2b" >
 
              <!-- <os:contains doc:name="Contains" doc:id="21ff0b4c-9219-4030-a7be-78577b8eb30b" objectStore="TokenValueObjectStore" key="TokenValue" target="token"/> -->

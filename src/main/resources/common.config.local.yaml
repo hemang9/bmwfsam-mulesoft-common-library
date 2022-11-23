@@ -24,4 +24,12 @@ mtatoken:
 ntlmauthentication:
   username: ""
   password: ""
+  
+objectstore:
+  expiryinterval: "20"
+  expiryinterval.unit: "MINUTES"
+  entryttl: "15"
+  entryttl.unit: "MINUTES"
+  persistent: "false"
+
     

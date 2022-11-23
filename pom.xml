@@ -6,7 +6,6 @@
 	<artifactId>bmwfsam-mulesoft-common-library</artifactId>
 	<version>1.0.6</version>
 	<packaging>mule-application</packaging>
-    
 	<name>bmwfsam-mulesoft-common-library</name>
 
 	<properties>
@@ -67,6 +66,12 @@
 			<version>2.0.1</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-objectstore-connector</artifactId>
+			<version>1.2.1</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
@@ -81,8 +86,6 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-	
-
 	<pluginRepositories>
 		<pluginRepository>
 			<id>myNexusMavenRepo.read</id>
